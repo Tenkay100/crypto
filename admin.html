@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration Console | Bit Crypto Chain Investment</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .admin-sidebar {
+            width: 260px;
+            background: #04080F;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            position: fixed;
+            top: 56px;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        .admin-main {
+            margin-left: 260px;
+            padding: 30px;
+            min-height: calc(100vh - 56px);
+        }
+        @media (max-width: 991px) {
+            .admin-sidebar {
+                left: -260px;
+            }
+            .admin-sidebar.active {
+                left: 0;
+            }
+            .admin-main {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body style="background-color: var(--bg-dark);">
+
+    <!-- Ticker Header -->
+    <div class="ticker-wrap" id="live-ticker-container">
+        <div class="ticker">
+            <span class="ticker-item text-muted">Loading live financial asset feeds...</span>
+        </div>
+    </div>
+
+    <!-- Sticky Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid px-lg-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="assets/images/logo.png" alt="Bit Crypto Chain logo" class="navbar-brand-img me-2" style="height: 32px; border-radius: 4px; border: 1px solid var(--accent-gold);">
+                <span class="glow-text-gold fs-4 fw-bold">BIT CRYPTO CHAIN</span>
+                <span class="badge bg-danger ms-2" style="font-size: 0.75rem;">ADMIN AREA</span>
+            </a>
+            
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small me-2 d-none d-md-inline" id="session-timeout-timer">Timeout: 10:00</span>
+                <button class="btn btn-outline-gold btn-sm d-lg-none" id="adminSidebarToggle"><i class="fas fa-bars"></i></button>
+                <button onclick="handleLogout()" class="btn btn-dark-glass btn-sm">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Portal Layout -->
+    <div class="d-flex">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <ul class="sidebar-menu p-3">
+                <li>
+                    <a href="#" class="sidebar-link active" data-admin-panel="dashboard">
+                        <i class="fas fa-chart-pie"></i> Dashboard Stats
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-admin-panel="users">
+                        <i class="fas fa-user-gear"></i> User Management
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-admin-panel="kyc">
+                        <i class="fas fa-id-card-clip"></i> KYC Management
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-admin-panel="transactions">
+                        <i class="fas fa-money-bill-transfer"></i> Transaction Ledger
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-admin-panel="announcements">
+                        <i class="fas fa-bullhorn"></i> Announcements
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-admin-panel="notifications">
+                        <i class="fas fa-bell"></i> Send Notifications
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-admin-panel="plans">
+                        <i class="fas fa-cubes"></i> Investment Plans
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-admin-panel="security">
+                        <i class="fas fa-shield-halved"></i> Security Logs
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="admin-main flex-grow-1">
+
+            <!-- ==================== VIEW: STATS DASHBOARD ==================== -->
+            <div class="admin-panel-block" id="panel-dashboard">
+                <h3 class="text-white fw-bold mb-4">Operations Metrics</h3>
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4 col-lg-3">
+                        <div class="glass-panel metric-card border-glow-gold">
+                            <h6 class="text-muted">Total Registered Users</h6>
+                            <h3 class="metric-value text-white" id="m-total-users">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <div class="glass-panel metric-card">
+                            <h6 class="text-muted">Active Users</h6>
+                            <h3 class="metric-value text-success" id="m-active-users">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <div class="glass-panel metric-card">
+                            <h6 class="text-muted">Pending KYC Review</h6>
+                            <h3 class="metric-value text-info" id="m-pending-kyc">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-3">
+                        <div class="glass-panel metric-card">
+                            <h6 class="text-muted">Pending Withdrawals</h6>
+                            <h3 class="metric-value text-warning" id="m-pending-wd">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        <div class="glass-panel metric-card text-start">
+                            <i class="fas fa-arrow-trend-up text-success float-end fs-3"></i>
+                            <h6 class="text-muted">Total Vault Deposits</h6>
+                            <h3 class="metric-value text-light" id="m-total-deposits">$0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        <div class="glass-panel metric-card text-start">
+                            <i class="fas fa-arrow-trend-down text-danger float-end fs-3"></i>
+                            <h6 class="text-muted">Total Paid Cashouts</h6>
+                            <h3 class="metric-value text-light" id="m-total-withdrawals">$0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-4">
+                    <h5 class="text-white mb-3">Recent Platform Activity</h5>
+                    <div class="table-responsive">
+                        <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                            <thead>
+                                <tr>
+                                    <th>Activity / Action</th>
+                                    <th>Logged Detail</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-recent-activity">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: USER MANAGEMENT ==================== -->
+            <div class="admin-panel-block d-none" id="panel-users">
+                <div class="glass-panel p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                        <h4 class="text-white m-0">Investor Accounts Registry</h4>
+                        <input type="text" id="userSearchInput" class="form-control form-control-custom py-2" placeholder="Search by name or email..." style="width: 300px;">
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table custom-table text-white mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Investor</th>
+                                    <th>Account Type</th>
+                                    <th>Status</th>
+                                    <th>Portfolio</th>
+                                    <th>Withdrawable</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-management-table-body">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: KYC MANAGEMENT ==================== -->
+            <div class="admin-panel-block d-none" id="panel-kyc">
+                <div class="glass-panel p-4">
+                    <h4 class="text-white mb-4">KYC Identification Files Audit</h4>
+                    
+                    <div class="table-responsive">
+                        <table class="table custom-table text-white mb-0">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Verification Docs</th>
+                                    <th>Notes & Remarks</th>
+                                    <th>KYC Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="kyc-management-table-body">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: TRANSACTION LEDGER ==================== -->
+            <div class="admin-panel-block d-none" id="panel-transactions">
+                <div class="row g-4">
+                    <!-- Deposits Queue -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-white mb-3"><i class="fas fa-arrow-down text-success me-2"></i>Deposits Records</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Amount</th>
+                                            <th>Ref / Notes</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactions-deposits-body">
+                                        <!-- Loaded by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Withdrawals Queue -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-white mb-3"><i class="fas fa-arrow-up text-warning me-2"></i>Withdrawals Approvals</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Amount</th>
+                                            <th>Address / Notes</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactions-withdrawals-body">
+                                        <!-- Loaded by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: ANNOUNCEMENTS ==================== -->
+            <div class="admin-panel-block d-none" id="panel-announcements">
+                <div class="row g-4">
+                    <div class="col-md-5">
+                        <div class="glass-panel p-4">
+                            <h5 class="text-white mb-3" id="ann-form-title">Create Announcement</h5>
+                            <form id="annForm">
+                                <input type="hidden" id="ann-edit-id">
+                                <div class="mb-3">
+                                    <label class="form-label-custom small">Broadcast Destination</label>
+                                    <select class="form-select form-control-custom" id="ann-dest" required>
+                                        <option value="all" selected>All Users</option>
+                                        <!-- Load users via JS -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-custom small">Advisory Header</label>
+                                    <input type="text" class="form-control form-control-custom" id="ann-header" required placeholder="Server Upgrades Scheduled">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-custom small">Message Details</label>
+                                    <textarea class="form-control form-control-custom" id="ann-text" rows="4" required placeholder="Write detail specifications..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-gold w-100 py-2" id="ann-submit-btn">Publish Announcement</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <div class="glass-panel p-4">
+                            <h5 class="text-white mb-3">Published Announcements</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>Target</th>
+                                            <th>Content</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="published-announcements-list">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: SEND NOTIFICATIONS ==================== -->
+            <div class="admin-panel-block d-none" id="panel-notifications">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="glass-panel p-4">
+                            <h5 class="text-white mb-3"><i class="fas fa-bell text-gold me-2"></i>Send Custom Notification</h5>
+                            <form id="customNotificationForm">
+                                <div class="mb-3">
+                                    <label class="form-label-custom small">Destination User Email</label>
+                                    <select class="form-select form-control-custom" id="notif-user-dest" required>
+                                        <!-- Filled via JS -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-custom small">Notification Alert</label>
+                                    <input type="text" class="form-control form-control-custom" id="notif-title" required placeholder="Deposit Approved">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-custom small">Alert Message Details</label>
+                                    <textarea class="form-control form-control-custom" id="notif-body" rows="4" required placeholder="Type notification contents..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-gold w-100 py-2">Deliver Notification</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="glass-panel p-4">
+                            <h5 class="text-white mb-3">Notification Logs</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Alert</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="notification-logs-body">
+                                        <!-- Filled dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: PLANS MANAGEMENT ==================== -->
+            <div class="admin-panel-block d-none" id="panel-plans">
+                <div class="row g-4">
+                    <div class="col-md-5">
+                        <div class="glass-panel p-4">
+                            <h5 class="text-white mb-3" id="plan-form-title">Create / Edit Investment Plan</h5>
+                            <form id="planForm">
+                                <input type="hidden" id="plan-edit-id">
+                                <div class="mb-3">
+                                    <label class="form-label-custom small">Plan Name</label>
+                                    <input type="text" class="form-control form-control-custom" id="plan-name" required placeholder="Standard Yield Optimizer">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-custom small">Yield ROI Percentage (%)</label>
+                                    <input type="number" step="0.01" class="form-control form-control-custom" id="plan-roi" required placeholder="1.5">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-custom small">Minimum Investment Allocation (USD)</label>
+                                    <input type="number" class="form-control form-control-custom" id="plan-min" required placeholder="1000">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-custom small">Maximum Investment Allocation (USD)</label>
+                                    <input type="number" class="form-control form-control-custom" id="plan-max" required placeholder="50000">
+                                </div>
+                                <button type="submit" class="btn btn-gold w-100 py-2" id="plan-submit-btn">Save Investment Plan</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <div class="glass-panel p-4">
+                            <h5 class="text-white mb-3">Investment Plan Offerings</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>Plan Name</th>
+                                            <th>ROI Ratio</th>
+                                            <th>Min/Max Allocation</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="investment-plans-list-body">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: SECURITY LOGS ==================== -->
+            <div class="admin-panel-block d-none" id="panel-security">
+                <div class="glass-panel p-4">
+                    <h5 class="text-white mb-4"><i class="fas fa-shield-halved text-gold me-2"></i>Administration Security Audit logs</h5>
+                    
+                    <div class="table-responsive">
+                        <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                            <thead>
+                                <tr>
+                                    <th>Action Logged</th>
+                                    <th>Execution Details</th>
+                                    <th>Event Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="security-audit-logs-body">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==================== MODAL: PROFILE & PASSWORD EDIT ==================== -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel text-start" style="border: 1px solid var(--accent-gold); background: #0B192C;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title text-white fw-bold"><i class="fas fa-user-edit text-gold me-2"></i>Edit Investor Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <input type="hidden" id="ep-email-key">
+                        <div class="mb-3">
+                            <label class="form-label-custom small">Full Name</label>
+                            <input type="text" id="ep-name" class="form-control form-control-custom" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom small">Email Address</label>
+                            <input type="email" id="ep-email" class="form-control form-control-custom" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom small">New Password (Leave blank to keep unchanged)</label>
+                            <input type="password" id="ep-password" class="form-control form-control-custom" placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100 py-2 mt-2">Save Profile Updates</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: FUNDS BALANCES ==================== -->
+    <div class="modal fade" id="editBalancesModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel text-start" style="border: 1px solid var(--accent-gold); background: #0B192C;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title text-white fw-bold"><i class="fas fa-wallet text-gold me-2"></i>Funds Ledger Adjustments</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small">Edit balances for: <strong class="text-white" id="eb-user-email"></strong></p>
+                    <form id="editBalancesForm">
+                        <input type="hidden" id="eb-email-key">
+                        
+                        <div class="mb-3">
+                            <label class="form-label-custom small">Portfolio Value (USD)</label>
+                            <input type="number" id="eb-portfolio" class="form-control form-control-custom" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom small">Total Accrued Profits (USD)</label>
+                            <input type="number" id="eb-profits" class="form-control form-control-custom" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom small">Total Confirmed Deposits (USD)</label>
+                            <input type="number" id="eb-deposits" class="form-control form-control-custom" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom small">Available Withdrawal Balance (USD)</label>
+                            <input type="number" id="eb-withdraw" class="form-control form-control-custom" required>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-gold flex-grow-1 py-2">Save Adjustments</button>
+                            <button type="button" onclick="clearBalances()" class="btn btn-danger py-2">Clear Funds</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: LOGIN HISTORY ==================== -->
+    <div class="modal fade" id="loginHistoryModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel text-start" style="border: 1px solid var(--accent-gold); background: #0B192C;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title text-white fw-bold"><i class="fas fa-clock-rotate-left text-gold me-2"></i>Login Logs History</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group list-group-flush bg-transparent" id="user-login-history-list">
+                        <!-- Filled by JS -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+
+    <script>
+        // Session Timeout Logic (10 Minutes)
+        let inactivityTimeout;
+        const TIMEOUT_PERIOD = 10 * 60 * 1000; // 10 minutes in ms
+        let secondsRemaining = 600;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            secondsRemaining = 600;
+            inactivityTimeout = setTimeout(() => {
+                alert('Session expired due to 10 minutes of inactivity. Logging out.');
+                handleLogout();
+            }, TIMEOUT_PERIOD);
+        }
+
+        // Live Countdown Display
+        setInterval(() => {
+            if (secondsRemaining > 0) {
+                secondsRemaining--;
+                const min = String(Math.floor(secondsRemaining / 60)).padStart(2, '0');
+                const sec = String(secondsRemaining % 60).padStart(2, '0');
+                const timerEl = document.getElementById('session-timeout-timer');
+                if (timerEl) timerEl.textContent = `Timeout: ${min}:${sec}`;
+            }
+        }, 1000);
+
+        // Bind reset triggers
+        ['click', 'mousemove', 'keypress', 'scroll'].forEach(evt => {
+            document.addEventListener(evt, resetInactivityTimer);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Guard: Session validation
+            if (!window.Auth) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            const currentUser = window.Auth.getCurrentUser();
+            if (!currentUser || currentUser.role !== 'admin') {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            // Start Timeout
+            resetInactivityTimer();
+
+            // Mobile sidebar toggle
+            const toggle = document.getElementById('adminSidebarToggle');
+            const menu = document.getElementById('adminSidebar');
+            if (toggle && menu) {
+                toggle.addEventListener('click', () => menu.classList.toggle('active'));
+            }
+
+            initAdminEngine();
+        });
+
+        function handleLogout() {
+            if (window.Auth) {
+                window.Auth.logout();
+            }
+            window.location.href = 'admin-login.html';
+        }
+
+        // Log admin activity helper
+        function logAdminAction(action, detail) {
+            const logs = JSON.parse(localStorage.getItem('admin_activity_logs')) || [];
+            logs.unshift({
+                action: action,
+                detail: detail,
+                timestamp: new Date().toLocaleString()
+            });
+            localStorage.setItem('admin_activity_logs', JSON.stringify(logs));
+        }
+
+        function initAdminEngine() {
+            // Switch tabs
+            const links = document.querySelectorAll('[data-admin-panel]');
+            links.forEach(l => {
+                l.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    links.forEach(x => x.classList.remove('active'));
+                    l.classList.add('active');
+
+                    const view = l.getAttribute('data-admin-panel');
+                    document.querySelectorAll('.admin-panel-block').forEach(b => b.classList.add('d-none'));
+                    const target = document.getElementById(`panel-${view}`);
+                    if (target) target.classList.remove('d-none');
+                    
+                    // Close sidebar on mobile
+                    const menu = document.getElementById('adminSidebar');
+                    if (menu) menu.classList.remove('active');
+                });
+            });
+
+            // Bind User Search
+            const search = document.getElementById('userSearchInput');
+            if (search) {
+                search.addEventListener('input', () => {
+                    renderUsersTable(search.value.trim().toLowerCase());
+                });
+            }
+
+            // Bind Announcement submission
+            const annForm = document.getElementById('annForm');
+            if (annForm) {
+                annForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const id = document.getElementById('ann-edit-id').value;
+                    const dest = document.getElementById('ann-dest').value;
+                    const header = document.getElementById('ann-header').value;
+                    const text = document.getElementById('ann-text').value;
+
+                    const announcements = JSON.parse(localStorage.getItem('announcements')) || [];
+
+                    if (id) {
+                        // Edit existing
+                        const ann = announcements.find(a => a.id === id);
+                        if (ann) {
+                            ann.target = dest;
+                            ann.title = header;
+                            ann.body = text;
+                            logAdminAction('Edit Announcement', `Edited announcement ID: ${id}`);
+                        }
+                    } else {
+                        // Create new
+                        const newAnn = {
+                            id: 'ANN-' + Math.floor(Math.random() * 9000 + 1000),
+                            target: dest,
+                            title: header,
+                            body: text,
+                            date: new Date().toISOString().split('T')[0]
+                        };
+                        announcements.unshift(newAnn);
+                        logAdminAction('Create Announcement', `Created announcement targeting: ${dest}`);
+                    }
+
+                    localStorage.setItem('announcements', JSON.stringify(announcements));
+                    annForm.reset();
+                    document.getElementById('ann-edit-id').value = '';
+                    document.getElementById('ann-form-title').textContent = 'Create Announcement';
+                    document.getElementById('ann-submit-btn').textContent = 'Publish Announcement';
+                    
+                    alert('Announcement published successfully.');
+                    renderAnnouncements();
+                });
+            }
+
+            // Bind custom notifications
+            const notifForm = document.getElementById('customNotificationForm');
+            if (notifForm) {
+                notifForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const dest = document.getElementById('notif-user-dest').value;
+                    const title = document.getElementById('notif-title').value;
+                    const body = document.getElementById('notif-body').value;
+
+                    const notifications = JSON.parse(localStorage.getItem('custom_notifications')) || [];
+                    notifications.unshift({
+                        id: 'NTF-' + Math.floor(Math.random() * 9000 + 1000),
+                        userEmail: dest,
+                        title: title,
+                        body: body,
+                        status: 'Unread',
+                        date: new Date().toLocaleString()
+                    });
+
+                    localStorage.setItem('custom_notifications', JSON.stringify(notifications));
+                    notifForm.reset();
+                    alert('Notification sent to ' + dest);
+                    renderNotificationsLogs();
+                    logAdminAction('Send Notification', `Sent alert to: ${dest}`);
+                });
+            }
+
+            // Bind Investment plans form submission
+            const planForm = document.getElementById('planForm');
+            if (planForm) {
+                planForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const id = document.getElementById('plan-edit-id').value;
+                    const name = document.getElementById('plan-name').value;
+                    const roi = parseFloat(document.getElementById('plan-roi').value);
+                    const min = parseFloat(document.getElementById('plan-min').value);
+                    const max = parseFloat(document.getElementById('plan-max').value);
+
+                    const plans = JSON.parse(localStorage.getItem('investment_plans')) || getStandardPlans();
+
+                    if (id) {
+                        const plan = plans.find(p => p.id === id);
+                        if (plan) {
+                            plan.name = name;
+                            plan.roi = roi;
+                            plan.min = min;
+                            plan.max = max;
+                            logAdminAction('Edit Plan', `Modified plan details: ${name}`);
+                        }
+                    } else {
+                        plans.push({
+                            id: 'PLN-' + Math.floor(Math.random() * 9000 + 1000),
+                            name: name,
+                            roi: roi,
+                            min: min,
+                            max: max,
+                            status: 'Active'
+                        });
+                        logAdminAction('Create Plan', `Created new plan: ${name}`);
+                    }
+
+                    localStorage.setItem('investment_plans', JSON.stringify(plans));
+                    planForm.reset();
+                    document.getElementById('plan-edit-id').value = '';
+                    document.getElementById('plan-form-title').textContent = 'Create / Edit Investment Plan';
+                    document.getElementById('plan-submit-btn').textContent = 'Save Investment Plan';
+
+                    alert('Investment plan saved.');
+                    renderInvestmentPlans();
+                });
+            }
+
+            // Bind profile details submission
+            const editProfileForm = document.getElementById('editProfileForm');
+            if (editProfileForm) {
+                editProfileForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const emailKey = document.getElementById('ep-email-key').value;
+                    const name = document.getElementById('ep-name').value;
+                    const newEmail = document.getElementById('ep-email').value;
+                    const pass = document.getElementById('ep-password').value;
+
+                    const users = JSON.parse(localStorage.getItem('users')) || {};
+                    if (users[emailKey]) {
+                        const tempUser = users[emailKey];
+                        tempUser.name = name;
+                        tempUser.email = newEmail;
+                        
+                        if (pass && pass.trim().length >= 8) {
+                            // Compute sha256 hash using window cryptography simulation
+                            const textEncoder = new TextEncoder();
+                            const buffer = textEncoder.encode(pass);
+                            const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+                            const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+                            tempUser.passwordHash = hashHex;
+                            logAdminAction('Reset Password', `Reset password for user: ${emailKey}`);
+                        }
+
+                        // If email changed, rewrite keys
+                        if (emailKey !== newEmail) {
+                            delete users[emailKey];
+                            users[newEmail] = tempUser;
+                        } else {
+                            users[emailKey] = tempUser;
+                        }
+
+                        localStorage.setItem('users', JSON.stringify(users));
+                        if (window.Auth) window.Auth.syncToFirebase();
+                        alert('Profile changes saved successfully.');
+                        bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+                        renderUsersTable();
+                        logAdminAction('Edit User Details', `Updated details for account: ${newEmail}`);
+                    }
+                });
+            }
+
+            // Bind balance submit Form
+            const editBalancesForm = document.getElementById('editBalancesForm');
+            if (editBalancesForm) {
+                editBalancesForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('eb-email-key').value;
+                    const port = parseFloat(document.getElementById('eb-portfolio').value);
+                    const prof = parseFloat(document.getElementById('eb-profits').value);
+                    const dep = parseFloat(document.getElementById('eb-deposits').value);
+                    const wd = parseFloat(document.getElementById('eb-withdraw').value);
+
+                    const users = JSON.parse(localStorage.getItem('users')) || {};
+                    if (users[email]) {
+                        const user = users[email];
+                        const oldPort = user.portfolio.portfolioValue;
+
+                        user.portfolio.portfolioValue = port;
+                        user.portfolio.totalProfit = prof;
+                        user.portfolio.totalDeposits = dep;
+                        user.portfolio.withdrawalAvailable = wd;
+
+                        // Create transaction log entries for the balance change audit trailing
+                        const txId = 'DEP-' + Math.floor(Math.random() * 9000 + 1000);
+                        user.transactions.push({
+                            id: txId,
+                            type: 'Deposit',
+                            amount: Math.abs(port - oldPort),
+                            coin: 'USD',
+                            date: new Date().toISOString().split('T')[0],
+                            status: 'Approved',
+                            notes: `Manual balance adjust from $${oldPort.toLocaleString()} to $${port.toLocaleString()}`
+                        });
+
+                        localStorage.setItem('users', JSON.stringify(users));
+                        if (window.Auth) window.Auth.syncToFirebase();
+                        alert('Balances adjusted successfully.');
+                        bootstrap.Modal.getInstance(document.getElementById('editBalancesModal')).hide();
+                        renderUsersTable();
+                        loadStats();
+                        logAdminAction('Adjust Balances', `Adjusted funds for user ${email} (New Port: $${port})`);
+                    }
+                });
+            }
+
+            // Init views
+            loadStats();
+            renderUsersTable();
+            renderKycTable();
+            renderLedgers();
+            renderAnnouncements();
+            renderNotificationsLogs();
+            renderInvestmentPlans();
+            renderSecurityLogs();
+        }
+
+        function loadStats() {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const emails = Object.keys(users);
+
+            let totalUsers = 0;
+            let activeUsers = 0;
+            let pendingKyc = 0;
+            let pendingWd = 0;
+            let totalDepositsVal = 0;
+            let totalWithdrawalsVal = 0;
+
+            emails.forEach(em => {
+                const u = users[em];
+                if (u.role === 'admin') return;
+
+                totalUsers++;
+                if (u.portfolio && u.portfolio.status === 'Active') activeUsers++;
+                if (u.portfolio && !u.portfolio.kyc_approved) pendingKyc++; // Simple count pending kyc
+
+                if (u.transactions) {
+                    u.transactions.forEach(t => {
+                        if (t.status === 'Pending' && t.type === 'Withdraw') pendingWd++;
+                        if (t.status === 'Approved') {
+                            if (t.type === 'Deposit') totalDepositsVal += t.amount;
+                            if (t.type === 'Withdraw') totalWithdrawalsVal += t.amount;
+                        }
+                    });
+                }
+            });
+
+            document.getElementById('m-total-users').textContent = totalUsers;
+            document.getElementById('m-active-users').textContent = activeUsers;
+            document.getElementById('m-pending-kyc').textContent = pendingKyc;
+            document.getElementById('m-pending-wd').textContent = pendingWd;
+            document.getElementById('m-total-deposits').textContent = '$' + totalDepositsVal.toLocaleString();
+            document.getElementById('m-total-withdrawals').textContent = '$' + totalWithdrawalsVal.toLocaleString();
+
+            // Load recent admin activity in operations metrics view
+            const logs = JSON.parse(localStorage.getItem('admin_activity_logs')) || [];
+            const dashBody = document.getElementById('dashboard-recent-activity');
+            if (dashBody) {
+                if (logs.length === 0) {
+                    dashBody.innerHTML = `<tr><td colspan="3" class="text-center text-muted">No recent operations logged</td></tr>`;
+                } else {
+                    dashBody.innerHTML = logs.slice(0, 5).map(l => `
+                        <tr>
+                            <td><strong>${l.action}</strong></td>
+                            <td class="text-muted">${l.detail}</td>
+                            <td class="font-monospace small">${l.timestamp}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        }
+
+        function renderUsersTable(query = '') {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const tbody = document.getElementById('user-management-table-body');
+            if (!tbody) return;
+
+            const emails = Object.keys(users).filter(em => {
+                const u = users[em];
+                if (u.role === 'admin') return false;
+                return u.name.toLowerCase().includes(query) || em.toLowerCase().includes(query);
+            });
+
+            // Populate announcements target dropdown list
+            const targetSelect = document.getElementById('ann-dest');
+            const targetNotif = document.getElementById('notif-user-dest');
+            const allEmails = Object.keys(users).filter(em => users[em].role !== 'admin');
+
+            if (targetSelect) {
+                targetSelect.innerHTML = `<option value="all" selected>All Registered Users</option>` +
+                    allEmails.map(em => `<option value="${em}">${users[em].name} (${em})</option>`).join('');
+            }
+            if (targetNotif) {
+                targetNotif.innerHTML = allEmails.map(em => `<option value="${em}">${users[em].name} (${em})</option>`).join('');
+            }
+
+            if (emails.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No users found matching query</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = emails.map(em => {
+                const u = users[em];
+                const portVal = u.portfolio ? u.portfolio.portfolioValue : 0;
+                const portWd = u.portfolio ? u.portfolio.withdrawalAvailable : 0;
+                const status = u.portfolio ? u.portfolio.status : 'Active';
+                const badge = status === 'Active' ? 'success' : 'failed';
+
+                return `
+                    <tr>
+                        <td><strong>${u.name}</strong><br><small class="text-muted">${em}</small></td>
+                        <td>${u.portfolio ? u.portfolio.accountType : 'Standard'}</td>
+                        <td><span class="status-badge ${badge}">${status}</span></td>
+                        <td><span class="glow-text-gold font-monospace">$${portVal.toLocaleString()}</span></td>
+                        <td><span class="glow-text-blue font-monospace">$${portWd.toLocaleString()}</span></td>
+                        <td>
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-dark-glass btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">Actions</button>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                    <li><a class="dropdown-item" href="#" onclick="openEditProfileModal('${em}')"><i class="fas fa-edit me-2"></i>Edit Details</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="openBalancesModal('${em}')"><i class="fas fa-wallet me-2"></i>Adjust Funds</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="toggleAccess('${em}')"><i class="fas fa-ban me-2"></i>Suspend/Activate</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="viewLoginHistory('${em}')"><i class="fas fa-history me-2"></i>Login History</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteUserAccount('${em}')"><i class="fas fa-trash me-2"></i>Delete User</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openEditProfileModal(email) {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const u = users[email];
+            if (!u) return;
+
+            document.getElementById('ep-email-key').value = email;
+            document.getElementById('ep-name').value = u.name;
+            document.getElementById('ep-email').value = u.email;
+            document.getElementById('ep-password').value = '';
+
+            const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+            modal.show();
+        }
+
+        function openBalancesModal(email) {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const u = users[email];
+            if (!u || !u.portfolio) return;
+
+            document.getElementById('eb-email-key').value = email;
+            document.getElementById('eb-user-email').textContent = email;
+            document.getElementById('eb-portfolio').value = u.portfolio.portfolioValue || 0;
+            document.getElementById('eb-profits').value = u.portfolio.totalProfit || 0;
+            document.getElementById('eb-deposits').value = u.portfolio.totalDeposits || 0;
+            document.getElementById('eb-withdraw').value = u.portfolio.withdrawalAvailable || 0;
+
+            const modal = new bootstrap.Modal(document.getElementById('editBalancesModal'));
+            modal.show();
+        }
+
+        function clearBalances() {
+            const email = document.getElementById('eb-email-key').value;
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            if (users[email]) {
+                users[email].portfolio.portfolioValue = 0;
+                users[email].portfolio.totalProfit = 0;
+                users[email].portfolio.totalDeposits = 0;
+                users[email].portfolio.withdrawalAvailable = 0;
+
+                localStorage.setItem('users', JSON.stringify(users));
+                if (window.Auth) window.Auth.syncToFirebase();
+                alert('Balances cleared.');
+                bootstrap.Modal.getInstance(document.getElementById('editBalancesModal')).hide();
+                renderUsersTable();
+                loadStats();
+                logAdminAction('Clear Balances', `Cleared all funds for user: ${email}`);
+            }
+        }
+
+        function toggleAccess(email) {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            if (users[email]) {
+                const cur = users[email].portfolio.status;
+                const next = cur === 'Active' ? 'Suspended' : 'Active';
+                users[email].portfolio.status = next;
+                localStorage.setItem('users', JSON.stringify(users));
+                if (window.Auth) window.Auth.syncToFirebase();
+                alert(`Account access set to: ${next}`);
+                renderUsersTable();
+                loadStats();
+                logAdminAction('Toggle Access', `Toggled account status for ${email} to ${next}`);
+            }
+        }
+
+        function viewLoginHistory(email) {
+            const historyList = document.getElementById('user-login-history-list');
+            if (!historyList) return;
+
+            // Seed mock history logs
+            const mockHistory = [
+                { dev: 'Chrome on Windows 11', ip: '192.168.1.42', date: '2026-07-09 10:14:02' },
+                { dev: 'Safari on iPhone 15 Pro', ip: '172.56.21.90', date: '2026-07-08 14:22:15' },
+                { dev: 'Firefox on MacOS', ip: '90.22.105.12', date: '2026-07-06 09:05:44' }
+            ];
+
+            historyList.innerHTML = mockHistory.map(h => `
+                <li class="list-group-item bg-transparent text-white border-secondary border-opacity-10 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong style="color: #FFFFFF;">${h.dev}</strong><br>
+                            <small class="text-muted">IP address: ${h.ip}</small>
+                        </div>
+                        <span class="badge bg-secondary font-monospace">${h.date}</span>
+                    </div>
+                </li>
+            `).join('');
+
+            const modal = new bootstrap.Modal(document.getElementById('loginHistoryModal'));
+            modal.show();
+        }
+
+        function deleteUserAccount(email) {
+            if (confirm(`Delete account ${email} permanently?`)) {
+                const users = JSON.parse(localStorage.getItem('users')) || {};
+                if (users[email]) {
+                    delete users[email];
+                    localStorage.setItem('users', JSON.stringify(users));
+                    if (window.Auth) window.Auth.syncToFirebase();
+                    alert('User account deleted.');
+                    renderUsersTable();
+                    loadStats();
+                    logAdminAction('Delete Account', `Deleted user account: ${email}`);
+                }
+            }
+        }
+
+        function renderKycTable() {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const tbody = document.getElementById('kyc-management-table-body');
+            if (!tbody) return;
+
+            const emails = Object.keys(users).filter(em => users[em].role !== 'admin');
+
+            tbody.innerHTML = emails.map(email => {
+                const u = users[email];
+                const kycApproved = u.portfolio.kyc_approved || false;
+                const statusText = kycApproved ? 'KYC Approved' : 'Audit Pending';
+                const badgeClass = kycApproved ? 'success' : 'pending';
+                const notes = u.portfolio.kyc_notes || 'No review notes written.';
+
+                return `
+                    <tr>
+                        <td><strong>${u.name}</strong><br><small class="text-muted">${email}</small></td>
+                        <td>
+                            <a href="#" onclick="alert('Viewing: Passport / ID Card scans details')" class="text-gold small d-block mb-1"><i class="fas fa-file-pdf me-1"></i>Passport_Scan.pdf</a>
+                            <a href="#" onclick="alert('Viewing: Address utility bill details')" class="text-gold small"><i class="fas fa-file-image me-1"></i>Utility_Bill.png</a>
+                        </td>
+                        <td>
+                            <input type="text" id="kyc-notes-${email.replace(/[@.]/g, '')}" class="form-control form-control-custom py-1" value="${notes}" placeholder="Add audit notes..." style="font-size: 0.8rem;">
+                        </td>
+                        <td><span class="status-badge ${badgeClass}">${statusText}</span></td>
+                        <td>
+                            <button onclick="saveKycStatus('${email}', true)" class="btn btn-success btn-sm me-1"><i class="fas fa-check"></i> Approve</button>
+                            <button onclick="saveKycStatus('${email}', false)" class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Reject</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function saveKycStatus(email, approved) {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            if (users[email]) {
+                const notesInput = document.getElementById(`kyc-notes-${email.replace(/[@.]/g, '')}`);
+                const notes = notesInput ? notesInput.value.trim() : 'No notes.';
+
+                users[email].portfolio.kyc_approved = approved;
+                users[email].portfolio.kyc_notes = notes;
+
+                localStorage.setItem('users', JSON.stringify(users));
+                if (window.Auth) window.Auth.syncToFirebase();
+                alert(`KYC Status saved for: ${email}`);
+                renderKycTable();
+                loadStats();
+                logAdminAction('Audit KYC', `KYC identity set to approved=${approved} for ${email} with notes: ${notes}`);
+            }
+        }
+
+        function renderLedgers() {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const emails = Object.keys(users);
+
+            const depTbody = document.getElementById('transactions-deposits-body');
+            const wdTbody = document.getElementById('transactions-withdrawals-body');
+
+            let depHtml = '';
+            let wdHtml = '';
+
+            emails.forEach(email => {
+                const uObj = users[email];
+                if (!uObj.transactions) return;
+
+                uObj.transactions.forEach(tx => {
+                    const notes = tx.notes || 'None';
+                    const keyId = `tx-notes-${tx.id}`;
+
+                    const actionsHtml = tx.status === 'Pending' ? `
+                        <div class="d-flex gap-1">
+                            <button onclick="auditTransaction('${email}', '${tx.id}', 'Approved')" class="btn btn-success btn-sm"><i class="fas fa-check"></i></button>
+                            <button onclick="auditTransaction('${email}', '${tx.id}', 'Rejected')" class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
+                        </div>
+                    ` : `<span class="badge bg-secondary">${tx.status}</span>`;
+
+                    const row = `
+                        <tr>
+                            <td><strong>${uObj.name}</strong><br><small class="text-muted">${email}</small></td>
+                            <td>
+                                <strong>$${tx.amount.toLocaleString()}</strong> (${tx.coin})<br>
+                                <input type="date" class="form-control form-control-custom py-0 px-1 mt-1 text-gold" value="${tx.date}" style="font-size: 0.7rem; width: 120px;" onchange="updateTransactionDate('${email}', '${tx.id}', this.value)">
+                            </td>
+                            <td>
+                                <input type="text" id="${keyId}" class="form-control form-control-custom py-1" value="${notes}" placeholder="Comments..." style="font-size: 0.75rem; width: 140px; margin-bottom: 4px;">
+                                <small class="text-muted d-block">Status: ${tx.status}</small>
+                            </td>
+                            <td>${actionsHtml}</td>
+                        </tr>
+                    `;
+
+                    if (tx.type === 'Deposit') depHtml += row;
+                    if (tx.type === 'Withdraw') wdHtml += row;
+                });
+            });
+
+            if (depTbody) depTbody.innerHTML = depHtml || '<tr><td colspan="4" class="text-center text-muted">No deposits logged</td></tr>';
+            if (wdTbody) wdTbody.innerHTML = wdHtml || '<tr><td colspan="4" class="text-center text-muted">No withdrawals logged</td></tr>';
+        }
+
+        function auditTransaction(email, txId, nextStatus) {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const userObj = users[email];
+            if (!userObj) return;
+
+            const tx = userObj.transactions.find(t => t.id === txId);
+            if (tx && tx.status === 'Pending') {
+                const notesInput = document.getElementById(`tx-notes-${tx.id}`);
+                const notes = notesInput ? notesInput.value.trim() : 'Approved by admin.';
+
+                tx.status = nextStatus;
+                tx.notes = notes;
+
+                // Adjust balances if approved
+                if (nextStatus === 'Approved') {
+                    if (tx.type === 'Deposit') {
+                        userObj.portfolio.totalDeposits += tx.amount;
+                        userObj.portfolio.portfolioValue += tx.amount;
+                    } else if (tx.type === 'Withdraw') {
+                        userObj.portfolio.portfolioValue -= tx.amount;
+                    }
+                } else if (nextStatus === 'Rejected' && tx.type === 'Withdraw') {
+                    // Refund available withdrawal balance back
+                    userObj.portfolio.withdrawalAvailable += tx.amount;
+                }
+
+                localStorage.setItem('users', JSON.stringify(users));
+                if (window.Auth) window.Auth.syncToFirebase();
+                alert(`Transaction status set to ${nextStatus}.`);
+                renderLedgers();
+                loadStats();
+                renderUsersTable();
+                logAdminAction('Audit Ledger', `Transaction ${txId} for ${email} set to ${nextStatus}. Notes: ${notes}`);
+            }
+        }
+
+        function renderAnnouncements() {
+            const list = JSON.parse(localStorage.getItem('announcements')) || [];
+            const tbody = document.getElementById('published-announcements-list');
+            if (tbody) {
+                if (list.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted">No announcements published</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = list.map(a => `
+                    <tr>
+                        <td><span class="badge bg-dark">${a.target}</span><br><small class="text-muted">${a.date}</small></td>
+                        <td><strong>${a.title}</strong><br><small class="text-muted">${a.body}</small></td>
+                        <td>
+                            <button onclick="editAnnouncement('${a.id}')" class="btn btn-outline-gold btn-sm me-1"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteAnnouncement('${a.id}')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function editAnnouncement(id) {
+            const list = JSON.parse(localStorage.getItem('announcements')) || [];
+            const ann = list.find(a => a.id === id);
+            if (ann) {
+                document.getElementById('ann-edit-id').value = ann.id;
+                document.getElementById('ann-dest').value = ann.target;
+                document.getElementById('ann-header').value = ann.title;
+                document.getElementById('ann-text').value = ann.body;
+                document.getElementById('ann-form-title').textContent = 'Edit Announcement';
+                document.getElementById('ann-submit-btn').textContent = 'Update Announcement';
+            }
+        }
+
+        function deleteAnnouncement(id) {
+            if (confirm('Delete announcement?')) {
+                let list = JSON.parse(localStorage.getItem('announcements')) || [];
+                list = list.filter(a => a.id !== id);
+                localStorage.setItem('announcements', JSON.stringify(list));
+                alert('Announcement deleted.');
+                renderAnnouncements();
+                logAdminAction('Delete Announcement', `Deleted announcement ID: ${id}`);
+            }
+        }
+
+        function renderNotificationsLogs() {
+            const logs = JSON.parse(localStorage.getItem('custom_notifications')) || [];
+            const tbody = document.getElementById('notification-logs-body');
+            if (tbody) {
+                if (logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted">No notifications sent</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = logs.map(n => `
+                    <tr>
+                        <td><small>${n.userEmail}</small></td>
+                        <td><strong>${n.title}</strong><br><small class="text-muted">${n.body}</small></td>
+                        <td><span class="badge ${n.status === 'Read' ? 'bg-success' : 'bg-warning'}">${n.status}</span></td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function getStandardPlans() {
+            return [
+                { id: 'PLN-1', name: 'Starter Tier Optimizer', roi: 1.25, min: 500, max: 5000, status: 'Active' },
+                { id: 'PLN-2', name: 'Premium Compound Swaps', roi: 2.50, min: 5000, max: 50000, status: 'Active' },
+                { id: 'PLN-3', name: 'Zurich Institutional Cold Pool', roi: 4.80, min: 50000, max: 1000000, status: 'Active' }
+            ];
+        }
+
+        function renderInvestmentPlans() {
+            const plans = JSON.parse(localStorage.getItem('investment_plans')) || getStandardPlans();
+            const tbody = document.getElementById('investment-plans-list-body');
+            if (tbody) {
+                tbody.innerHTML = plans.map(p => `
+                    <tr>
+                        <td><strong>${p.name}</strong></td>
+                        <td><span class="text-success">${p.roi}% Daily</span></td>
+                        <td>$${p.min.toLocaleString()} - $${p.max.toLocaleString()}</td>
+                        <td><span class="badge ${p.status === 'Active' ? 'bg-success' : 'bg-danger'}">${p.status}</span></td>
+                        <td>
+                            <button onclick="editPlan('${p.id}')" class="btn btn-outline-gold btn-sm me-1"><i class="fas fa-edit"></i></button>
+                            <button onclick="togglePlanStatus('${p.id}')" class="btn btn-dark-glass btn-sm me-1"><i class="fas fa-ban"></i></button>
+                            <button onclick="deletePlan('${p.id}')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function editPlan(id) {
+            const plans = JSON.parse(localStorage.getItem('investment_plans')) || getStandardPlans();
+            const plan = plans.find(p => p.id === id);
+            if (plan) {
+                document.getElementById('plan-edit-id').value = plan.id;
+                document.getElementById('plan-name').value = plan.name;
+                document.getElementById('plan-roi').value = plan.roi;
+                document.getElementById('plan-min').value = plan.min;
+                document.getElementById('plan-max').value = plan.max;
+                document.getElementById('plan-form-title').textContent = 'Edit Investment Plan';
+                document.getElementById('plan-submit-btn').textContent = 'Update Plan Details';
+            }
+        }
+
+        function togglePlanStatus(id) {
+            const plans = JSON.parse(localStorage.getItem('investment_plans')) || getStandardPlans();
+            const plan = plans.find(p => p.id === id);
+            if (plan) {
+                plan.status = plan.status === 'Active' ? 'Inactive' : 'Active';
+                localStorage.setItem('investment_plans', JSON.stringify(plans));
+                alert(`Plan status toggled to: ${plan.status}`);
+                renderInvestmentPlans();
+                logAdminAction('Toggle Plan Status', `Toggled status of plan ${plan.name} to ${plan.status}`);
+            }
+        }
+
+        function deletePlan(id) {
+            if (confirm('Delete this investment plan?')) {
+                let plans = JSON.parse(localStorage.getItem('investment_plans')) || getStandardPlans();
+                plans = plans.filter(p => p.id !== id);
+                localStorage.setItem('investment_plans', JSON.stringify(plans));
+                alert('Plan deleted.');
+                renderInvestmentPlans();
+                logAdminAction('Delete Plan', `Deleted investment plan ID: ${id}`);
+            }
+        }
+
+        function renderSecurityLogs() {
+            const logs = JSON.parse(localStorage.getItem('admin_activity_logs')) || [];
+            const tbody = document.getElementById('security-audit-logs-body');
+            if (tbody) {
+                if (logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted">No security activity logs recorded</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = logs.map(l => `
+                    <tr>
+                        <td><strong>${l.action}</strong></td>
+                        <td class="text-muted">${l.detail}</td>
+                        <td class="font-monospace small">${l.timestamp}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // Global Bindings
+        window.openEditProfileModal = openEditProfileModal;
+        window.openBalancesModal = openBalancesModal;
+        window.clearBalances = clearBalances;
+        window.toggleAccess = toggleAccess;
+        window.viewLoginHistory = viewLoginHistory;
+        window.deleteUserAccount = deleteUserAccount;
+        window.saveKycStatus = saveKycStatus;
+        window.auditTransaction = auditTransaction;
+        window.editAnnouncement = editAnnouncement;
+        window.deleteAnnouncement = deleteAnnouncement;
+        window.editPlan = editPlan;
+        window.togglePlanStatus = togglePlanStatus;
+        window.deletePlan = deletePlan;
+
+        // Dynamic date changes inside ledgers
+        window.updateTransactionDate = (email, txId, newDate) => {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const userObj = users[email];
+            if (userObj && userObj.transactions) {
+                const tx = userObj.transactions.find(t => t.id === txId);
+                if (tx) {
+                    tx.date = newDate;
+                    localStorage.setItem('users', JSON.stringify(users));
+                    if (window.Auth) window.Auth.syncToFirebase();
+                    renderLedgers();
+                    renderUsersTable();
+                }
+            }
+        };
+
+        // Live Market Ticker Header Hook
+        const initAdminTicker = () => {
+            const tickerContainer = document.getElementById('live-ticker-container');
+            if (tickerContainer && window.CryptoAPI) {
+                const renderTicker = (coins) => {
+                    let html = '<div class="ticker">';
+                    const coinsList = Object.values(coins);
+                    const renderItems = () => {
+                        return coinsList.map(coin => {
+                            const isUp = coin.change24h >= 0;
+                            const sign = isUp ? '+' : '';
+                            const classColor = isUp ? 'text-success' : 'text-danger';
+                            const iconArrow = isUp ? '▲' : '▼';
+                            return `
+                                <span class="ticker-item" style="display: inline-block; margin-right: 2rem; color: #CCCCCC; font-size: 0.8rem;">
+                                    ${coin.name} (${coin.symbol}): 
+                                    <strong class="text-gold">$${coin.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</strong>
+                                    <span class="${classColor} ms-1" style="font-size: 0.7rem;">${iconArrow} ${sign}${coin.change24h.toFixed(2)}%</span>
+                                </span>
+                            `;
+                        }).join('');
+                    };
+                    html += renderItems() + renderItems() + '</div>';
+                    tickerContainer.innerHTML = html;
+                };
+                window.CryptoAPI.onPriceUpdate(renderTicker);
+                renderTicker(window.CryptoAPI.getCoins());
+            }
+        };
+        initAdminTicker();
+    </script>
+</body>
+</html>

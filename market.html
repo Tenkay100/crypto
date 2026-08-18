@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Crypto Market | Bit Crypto Chain Investment Crypto Investments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Live Ticker -->
+    <div class="ticker-wrap" id="live-ticker-container">
+        <div class="ticker">
+            <span class="ticker-item text-muted">Loading live financial asset feeds...</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="assets/images/logo.png" alt="Bit Crypto Chain logo" class="navbar-brand-img me-2" style="height: 38px; border-radius: 4px; border: 1px solid var(--accent-gold);">
+                <span class="glow-text-gold fs-4 fw-bold">BIT CRYPTO CHAIN</span>
+            </a>
+            <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars fs-3"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="plans.html">Investment Plans</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="market.html">Live Market</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="contact.html">Contact Us</a></li>
+                </ul>
+                <div class="d-flex align-items-center" id="nav-auth-placeholder">
+                    <a href="login.html" class="btn btn-outline-gold btn-sm me-2">Login</a>
+                    <a href="signup.html" class="btn btn-gold btn-sm">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Subpage Hero -->
+    <section class="py-5 text-center position-relative overflow-hidden">
+        <div class="hero-glow-1"></div>
+        <div class="container py-4">
+            <h1 class="glow-text-gold fw-bold mb-3">Live Digital Asset Rates</h1>
+            <p class="text-muted mx-auto col-lg-8">Monitor institutional crypto-asset pricing feeds. Click on any coin row to visualize live charts.</p>
+        </div>
+    </section>
+
+    <!-- Market Table Section -->
+    <section class="py-4">
+        <div class="container">
+            <div class="glass-panel p-4 mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h4 class="text-white m-0">Cryptocurrency Spot Rates</h4>
+                    <div class="d-flex">
+                        <input type="text" id="coinSearch" class="form-control form-control-custom py-2" placeholder="Search by name..." style="width: 250px;">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table custom-table mb-0 text-white">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Symbol</th>
+                                <th>Price (USD)</th>
+                                <th>24h Change</th>
+                                <th>Market Cap</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="market-table-body">
+                            <!-- Populated dynamically -->
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="spinner-border text-gold" role="status">
+                                        <span class="visually-hidden">Loading data feeds...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chart details Modal -->
+    <div class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content glass-panel" style="border: 1px solid var(--accent-gold); background: #0B192C;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title text-white fw-bold" id="chartModalLabel">
+                        <span id="modal-coin-icon" class="coin-icon d-inline-flex me-2"></span>
+                        <span id="modal-coin-name">Bitcoin</span>
+                        <span class="badge bg-secondary fs-6 ms-2" id="modal-coin-symbol">BTC</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row text-center mb-3">
+                        <div class="col-6 col-md-3">
+                            <small class="text-muted d-block">Current Price</small>
+                            <h4 class="text-white fw-bold" id="modal-coin-price">$0.00</h4>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <small class="text-muted d-block">24h Change</small>
+                            <h4 id="modal-coin-change" class="fw-bold">0.00%</h4>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <small class="text-muted d-block">Market Cap</small>
+                            <h4 class="text-white fw-bold" id="modal-coin-mcap">$0.00</h4>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <small class="text-muted d-block">Historical Range</small>
+                            <h4 class="text-white fw-bold">Live Track</h4>
+                        </div>
+                    </div>
+                    
+                    <!-- Line Chart Canvas -->
+                    <div style="height: 300px; width: 100%;">
+                        <canvas id="modalPriceChart"></canvas>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-dark-glass" data-bs-dismiss="modal">Close</button>
+                    <a href="signup.html" class="btn btn-gold">Invest In This Asset</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center text-muted">
+            <p>&copy; 2016 Bit Crypto Chain Investment Crypto Investments. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        let modalChart = null;
+        let selectedCoinSymbol = 'BTC';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableBody = document.getElementById('market-table-body');
+            const searchInput = document.getElementById('coinSearch');
+
+            const renderTable = (coins) => {
+                const query = searchInput.value.toLowerCase();
+                const filteredCoins = Object.values(coins).filter(c => 
+                    c.name.toLowerCase().includes(query) || c.symbol.toLowerCase().includes(query)
+                );
+
+                if (filteredCoins.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">No assets match your search</td></tr>`;
+                    return;
+                }
+
+                tableBody.innerHTML = filteredCoins.map(coin => {
+                    const isUp = coin.change24h >= 0;
+                    const sign = isUp ? '+' : '';
+                    const changeClass = isUp ? 'up' : 'down';
+                    const iconArrow = isUp ? '▲' : '▼';
+
+                    return `
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="coin-icon me-3">${coin.icon}</div>
+                                    <strong>${coin.name}</strong>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-dark">${coin.symbol}</span></td>
+                            <td><span class="glow-text-gold font-monospace">$${coin.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</span></td>
+                            <td><span class="coin-change ${changeClass}">${iconArrow} ${sign}${coin.change24h.toFixed(2)}%</span></td>
+                            <td>$${coin.marketCap}</td>
+                            <td>
+                                <button class="btn btn-gold btn-sm px-3" onclick="openDetailsModal('${coin.symbol}')">
+                                    <i class="fas fa-chart-line me-1"></i> Chart
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            };
+
+            // Hook price changes
+            if (window.CryptoAPI) {
+                window.CryptoAPI.onPriceUpdate((coins) => {
+                    renderTable(coins);
+                    // Update active modal parameters if matching coin is open
+                    if (document.getElementById('chartModal').classList.contains('show')) {
+                        updateModalValues(coins[selectedCoinSymbol]);
+                        updateChartData();
+                    }
+                });
+
+                renderTable(window.CryptoAPI.getCoins());
+            }
+
+            searchInput.addEventListener('input', () => {
+                if (window.CryptoAPI) renderTable(window.CryptoAPI.getCoins());
+            });
+        });
+
+        function openDetailsModal(symbol) {
+            selectedCoinSymbol = symbol;
+            const coins = window.CryptoAPI.getCoins();
+            const coin = coins[symbol];
+            
+            updateModalValues(coin);
+
+            // Trigger Bootstrap modal open
+            const modalEl = new bootstrap.Modal(document.getElementById('chartModal'));
+            modalEl.show();
+
+            // Destroy previous chart instance before drawing
+            if (modalChart) {
+                modalChart.destroy();
+            }
+
+            // Draw initial chart
+            const ctx = document.getElementById('modalPriceChart').getContext('2d');
+            const dataPoints = window.CryptoAPI.getHistory(symbol);
+            const labels = dataPoints.map((_, i) => `${3 * i}s ago`).reverse();
+
+            modalChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `${symbol} Price (USD)`,
+                        data: dataPoints,
+                        borderColor: '#FFD700',
+                        backgroundColor: 'rgba(212, 175, 55, 0.05)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#A0AEC0' } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#A0AEC0' } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function updateModalValues(coin) {
+            document.getElementById('modal-coin-name').textContent = coin.name;
+            document.getElementById('modal-coin-symbol').textContent = coin.symbol;
+            document.getElementById('modal-coin-icon').textContent = coin.icon;
+            document.getElementById('modal-coin-price').textContent = `$${coin.price.toLocaleString()}`;
+            
+            const changeBadge = document.getElementById('modal-coin-change');
+            const isUp = coin.change24h >= 0;
+            changeBadge.className = `fw-bold ${isUp ? 'text-success' : 'text-danger'}`;
+            changeBadge.textContent = `${isUp ? '+' : ''}${coin.change24h.toFixed(2)}%`;
+
+            document.getElementById('modal-coin-mcap').textContent = `$${coin.marketCap}`;
+        }
+
+        function updateChartData() {
+            if (!modalChart) return;
+            const dataPoints = window.CryptoAPI.getHistory(selectedCoinSymbol);
+            modalChart.data.datasets[0].data = dataPoints;
+            modalChart.data.labels = dataPoints.map((_, i) => `${3 * i}s ago`).reverse();
+            modalChart.update('none'); // Update without animation performance lag
+        }
+    </script>
+</body>
+</html>

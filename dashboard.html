@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Dashboard | Bit Crypto Chain Investment Crypto Investments</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Chart.js and FontAwesome -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="background-color: var(--bg-dark);">
+
+    <!-- Ticker Header -->
+    <div class="ticker-wrap" id="live-ticker-container">
+        <div class="ticker">
+            <span class="ticker-item text-muted">Loading live financial asset feeds...</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="assets/images/logo.png" alt="Bit Crypto Chain logo" class="navbar-brand-img me-2" style="height: 32px; border-radius: 4px; border: 1px solid var(--accent-gold);">
+                <span class="glow-text-gold fs-4 fw-bold">BIT CRYPTO CHAIN</span>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <button id="sidebarToggle" class="btn btn-outline-gold d-lg-none me-2">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="d-flex align-items-center" id="nav-auth-placeholder">
+                    <!-- Loaded dynamically -->
+                    <button onclick="handleLogout()" class="btn btn-dark-glass btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Wrapper -->
+    <div class="dashboard-wrapper">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebarMenu">
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#" class="sidebar-link active" data-view="overview">
+                        <i class="fas fa-chart-pie"></i> Overview
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-view="deposit">
+                        <i class="fas fa-wallet"></i> Make Deposit
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-view="withdraw">
+                        <i class="fas fa-money-bill-transfer"></i> Withdraw Funds
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-view="history">
+                        <i class="fas fa-receipt"></i> Transaction History
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-view="settings">
+                        <i class="fas fa-user-gear"></i> Profile Settings
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-view="referral">
+                        <i class="fas fa-users"></i> Referral System
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-view="kyc">
+                        <i class="fas fa-id-card"></i> KYC Verification
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-view="tools">
+                        <i class="fas fa-sliders"></i> Crypto Tools
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-view="support">
+                        <i class="fas fa-headset"></i> Support Tickets
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-view="security">
+                        <i class="fas fa-shield-halved"></i> Security & Logs
+                    </a>
+                </li>
+                <!-- Dark/Light Mode Toggle -->
+                <li class="border-top border-secondary border-opacity-10 mt-2 pt-2">
+                    <a href="#" class="sidebar-link text-info" onclick="toggleThemeMode(event)">
+                        <i class="fas fa-moon"></i> <span id="theme-toggle-text">Light Mode</span>
+                    </a>
+                </li>
+                <!-- Admin specific navigation tab -->
+                <li id="admin-sidebar-tab" class="d-none border-top border-secondary border-opacity-10 mt-2 pt-2">
+                    <a href="admin.html" class="sidebar-link text-gold">
+                        <i class="fas fa-user-shield text-gold"></i> Admin Console
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="dashboard-content">
+            
+            <!-- Welcome Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div>
+                    <h2 class="text-white fw-bold mb-0">Welcome back, <span id="dash-welcome-name" class="glow-text-gold">Investor</span>!</h2>
+                    <p class="text-muted mb-0">Account Tier: <span class="badge bg-gold text-black" id="dash-account-type">Standard</span></p>
+                </div>
+                <div class="glass-panel py-2 px-3 d-flex align-items-center gap-2">
+                    <span class="status-badge success d-inline-block p-1 rounded-circle me-1"></span>
+                    <small class="text-muted">Security: HTTPS Secured & Session Guard Active</small>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: OVERVIEW ==================== -->
+            <div class="dashboard-panel" id="panel-overview">
+                <!-- Portfolio Metrics Grid -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="glass-panel metric-card">
+                            <i class="fas fa-wallet text-gold"></i>
+                            <h6 class="text-muted">Total Portfolio Value</h6>
+                            <h3 class="metric-value glow-text-gold" id="val-portfolio">$0</h3>
+                            <small class="text-muted">Live holdings assessment</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="glass-panel metric-card">
+                            <i class="fas fa-chart-line text-success"></i>
+                            <h6 class="text-muted">Total ROI Profit</h6>
+                            <h3 class="metric-value text-success" id="val-profit">$0</h3>
+                            <small class="text-muted">Accrued daily yields</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="glass-panel metric-card">
+                            <i class="fas fa-arrow-down-long text-blue"></i>
+                            <h6 class="text-muted">Total Deposits</h6>
+                            <h3 class="metric-value text-light" id="val-deposits">$0</h3>
+                            <small class="text-muted">Approved net allocations</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="glass-panel metric-card">
+                            <i class="fas fa-hand-holding-dollar text-gold"></i>
+                            <h6 class="text-muted">Withdrawal Available</h6>
+                            <h3 class="metric-value glow-text-blue" id="val-withdraw">$0</h3>
+                            <small class="text-muted">Liquid wallet holdings</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <!-- Progress Chart -->
+                    <div class="col-lg-8">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-white mb-4"><i class="fas fa-chart-area text-gold me-2"></i>Portfolio Growth Curve</h5>
+                            <div style="height: 300px; width: 100%;">
+                                <canvas id="portfolioProgressChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Market Rates Card -->
+                    <div class="col-lg-8 mt-4">
+                        <div class="glass-panel p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="text-white m-0"><i class="fas fa-chart-line text-gold me-2"></i>Live Crypto Market Prices</h5>
+                                <span class="badge bg-success bg-opacity-25 text-success py-1 px-2 border border-success border-opacity-25" style="font-size: 0.7rem;"><i class="fas fa-sync fa-spin me-1"></i>Live Update</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.8rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>Asset</th>
+                                            <th>Price (USD)</th>
+                                            <th>24h Change</th>
+                                            <th>Market Cap</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dash-live-market-body">
+                                        <!-- Loaded dynamically by dashboard.js -->
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">Awaiting API rates sync...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Side Notifications Panel & Calculator -->
+                    <div class="col-lg-4">
+                        <div class="glass-panel p-4 mb-4">
+                            <h5 class="text-white mb-3"><i class="fas fa-bell text-gold me-2"></i>Security Advisory</h5>
+                            <div id="dash-advisory-announcements">
+                                <div class="d-flex border-bottom border-secondary border-opacity-10 pb-3 mb-3">
+                                    <div class="fs-4 text-gold me-3"><i class="fas fa-shield"></i></div>
+                                    <div>
+                                        <h6 class="text-white mb-1">Cold Wallet Migration Complete</h6>
+                                        <p class="text-muted small mb-0">Assets migrated successfully to geographically isolated hardware modules.</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="fs-4 text-blue me-3"><i class="fas fa-key"></i></div>
+                                    <div>
+                                        <h6 class="text-white mb-1">2FA Enforcement</h6>
+                                        <p class="text-muted small mb-0">Upgrade your password periodically in profile settings.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Notifications Panel -->
+                        <div class="glass-panel p-4 mb-4">
+                            <h5 class="text-white mb-3"><i class="fas fa-bell text-blue me-2"></i>Personal Notifications</h5>
+                            <div id="dash-custom-notifications" style="max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px;">
+                                <div class="text-muted small">No new notifications.</div>
+                            </div>
+                        </div>
+
+                        <!-- Live Crypto News Panel -->
+                        <div class="glass-panel p-4 mb-4">
+                            <h5 class="text-white mb-3"><i class="fas fa-newspaper text-gold me-2"></i>Live Crypto News</h5>
+                            <div id="dash-news-container" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px;">
+                                <div class="text-muted small">Loading news feed...</div>
+                            </div>
+                        </div>
+
+                        <!-- Embedded Profit Calculator -->
+                        <div class="glass-panel p-4">
+                            <h5 class="text-white mb-3"><i class="fas fa-calculator text-blue me-2"></i>Yield Calculator</h5>
+                            <div class="mb-3">
+                                <label class="form-label-custom small">Investment Amount (USD)</label>
+                                <input type="number" class="form-control form-control-custom py-1" id="calc-amount" value="50000" min="250">
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label-custom small">Daily ROI %</label>
+                                    <input type="number" class="form-control form-control-custom py-1" id="calc-rate" value="3.8" step="0.1">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label-custom small">Term (Days)</label>
+                                    <input type="number" class="form-control form-control-custom py-1" id="calc-term" value="30">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between pt-2 border-top border-secondary border-opacity-10">
+                                <span class="small text-muted">Total Returns:</span>
+                                <strong class="text-success" id="calc-out-total">$0</strong>
+                            </div>
+                            <small class="text-muted" style="font-size: 0.75rem;">Daily Profit: <span id="calc-out-daily">$0</span></small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Latest Transactions snippet -->
+                <div class="glass-panel p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="text-white mb-0"><i class="fas fa-history text-gold me-2"></i>Recent Transaction Logs</h5>
+                        <a href="#" onclick="document.querySelector('[data-view=history]').click();" class="text-gold text-decoration-none small">View All <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table custom-table text-white mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Asset</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactions-body">
+                                <!-- Loaded dynamically by dashboard.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: DEPOSIT ==================== -->
+            <div class="dashboard-panel d-none" id="panel-deposit">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="glass-panel p-4 p-md-5 border-glow-gold text-start">
+                            <h4 class="text-white fw-bold glow-text-gold mb-3"><i class="fas fa-arrow-down-long me-2"></i>Submit Fund Allocation</h4>
+                            <p class="text-muted">Transfer assets to our secure deposits node. Submissions will reflect instantly on admin confirmation.</p>
+                            
+                            <div class="alert alert-success d-none" id="depositAlert">
+                                <strong>Request Logged!</strong> Your deposit reference is pending approval in the Admin dashboard queue.
+                            </div>
+
+                            <form id="depositForm">
+                                <input type="hidden" class="csrf-field">
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label form-label-custom">Select Transfer Currency</label>
+                                        <select class="form-select form-control-custom" id="depCoin" required>
+                                            <option value="BTC" selected>Bitcoin (BTC)</option>
+                                            <option value="ETH">Ethereum (ETH)</option>
+                                            <option value="USDT">Tether (USDT - TRC20)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label form-label-custom">Deposit Value (USD Equivalents)</label>
+                                        <input type="number" id="depAmount" class="form-control form-control-custom" placeholder="Min. $250" required min="250">
+                                    </div>
+                                </div>
+
+                                <div class="mb-4 bg-black bg-opacity-30 p-3 rounded border border-secondary border-opacity-15">
+                                    <label class="form-label form-label-custom">Send assets to this corporate vault wallet address:</label>
+                                    <div class="input-group">
+                                        <input type="text" id="depAddress" class="form-control form-control-custom text-gold" readonly>
+                                        <button class="btn btn-outline-gold" type="button" onclick="navigator.clipboard.writeText(document.getElementById('depAddress').value); alert('Wallet address copied!')">Copy</button>
+                                    </div>
+                                    <small class="text-muted mt-2 d-block"><i class="fas fa-circle-info me-1"></i>Ensure transfer currency matches. Sending alternate tokens results in asset loss.</small>
+                                </div>
+
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label form-label-custom">Transaction Hash / TxID</label>
+                                        <input type="text" id="depTxRef" class="form-control form-control-custom" placeholder="Reference TX-Hash ID" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label form-label-custom">Upload Deposit Proof Receipt</label>
+                                        <input type="file" class="form-control form-control-custom" accept="image/*,application/pdf">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-gold w-100 py-3"><i class="fas fa-cloud-arrow-up me-2"></i>Submit Deposit Log</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: WITHDRAW ==================== -->
+            <div class="dashboard-panel d-none" id="panel-withdraw">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="glass-panel p-4 p-md-5 border-glow-gold text-start">
+                            <h4 class="text-white fw-bold glow-text-blue mb-3"><i class="fas fa-money-bill-transfer me-2"></i>Withdraw Available Portfolio Balance</h4>
+                            <p class="text-muted">Asset withdrawals are processed via multi-sig channels. Approvals take up to 1 hour under standard conditions.</p>
+
+                            <div class="alert alert-success d-none" id="withdrawAlert">
+                                <strong>Request Logged!</strong> Withdrawal request has been queued. You can approve this immediately in the Admin Console.
+                            </div>
+
+                            <form id="withdrawForm">
+                                <input type="hidden" class="csrf-field">
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label form-label-custom">Select Transfer Currency</label>
+                                        <select class="form-select form-control-custom" id="wdCoin" required>
+                                            <option value="BTC" selected>Bitcoin (BTC)</option>
+                                            <option value="ETH">Ethereum (ETH)</option>
+                                            <option value="USDT">Tether (USDT)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label form-label-custom">Withdrawal Amount (USD)</label>
+                                        <input type="number" id="wdAmount" class="form-control form-control-custom" placeholder="e.g. 500" required min="10">
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label form-label-custom">Recipient Wallet Address</label>
+                                    <input type="text" id="wdAddress" class="form-control form-control-custom text-gold" placeholder="Enter external wallet address" required minlength="26">
+                                    <small class="text-muted mt-2 d-block"><i class="fas fa-triangle-exclamation me-1"></i>Bit Crypto Chain Investment holds zero accountability for errors in user address entries.</small>
+                                </div>
+
+                                <button type="submit" class="btn btn-gold w-100 py-3"><i class="fas fa-paper-plane me-2"></i>Submit Withdrawal Request</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: HISTORY ==================== -->
+            <div class="dashboard-panel d-none" id="panel-history">
+                <div class="glass-panel p-4">
+                    <h4 class="text-white fw-bold mb-4"><i class="fas fa-history text-gold me-2"></i>Full Portfolio Transaction Logs</h4>
+                    <div class="table-responsive">
+                        <table class="table custom-table text-white mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Asset</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactions-body-full">
+                                <!-- This body will automatically sync with main transactions body through JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: SETTINGS ==================== -->
+            <div class="dashboard-panel d-none" id="panel-settings">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="glass-panel p-4 p-md-5 border-glow-gold text-start">
+                            <h4 class="text-white fw-bold glow-text-gold mb-4"><i class="fas fa-user-gear me-2"></i>Profile Settings & Security</h4>
+                            <form id="settingsForm">
+                                <div class="mb-3">
+                                    <label class="form-label form-label-custom">Full Name</label>
+                                    <input type="text" id="set-name" class="form-control form-control-custom" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label form-label-custom">Email Address</label>
+                                    <input type="email" id="set-email" class="form-control form-control-custom" readonly>
+                                    <small class="text-muted">Email address updates require priority administration approvals.</small>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label form-label-custom">Change Password</label>
+                                    <input type="password" id="set-pass" class="form-control form-control-custom" placeholder="Enter new password (min. 8 characters)">
+                                </div>
+                                <button type="submit" class="btn btn-gold w-100 py-3">Save Profile Updates</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: ADMIN CONSOLE ==================== -->
+            <div class="dashboard-panel d-none" id="panel-admin">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="glass-panel p-3 text-center border-glow-gold">
+                            <h6 class="text-muted">Total Registered Accounts</h6>
+                            <h3 class="text-white fw-bold mb-0 glow-text-gold" id="admin-total-users">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-panel p-3 text-center">
+                            <h6 class="text-muted">Platform System Status</h6>
+                            <h3 class="text-success fw-bold mb-0"><i class="fas fa-check-circle me-1"></i>Optimal</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-panel p-3 text-center">
+                            <h6 class="text-muted">Escrow Reserves Protection</h6>
+                            <h3 class="glow-text-blue fw-bold mb-0">100% Backed</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Deposit approvals queue -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4">
+                            <h5 class="text-white mb-3"><i class="fas fa-arrow-down-long text-gold me-2"></i>Pending Deposit Approvals</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>Investor</th>
+                                            <th>Amount</th>
+                                            <th>Ref Hash</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-deposits-body">
+                                        <!-- Loaded by dashboard.js -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Withdrawal approvals queue -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4">
+                            <h5 class="text-white mb-3"><i class="fas fa-money-bill-transfer text-blue me-2"></i>Pending Withdrawal Approvals</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>Investor</th>
+                                            <th>Amount</th>
+                                            <th>Recipient Address</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-withdraws-body">
+                                        <!-- Loaded by dashboard.js -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: REFERRAL ==================== -->
+            <div class="dashboard-panel d-none" id="panel-referral">
+                <div class="glass-panel p-4 mb-4">
+                    <h4 class="text-white fw-bold mb-3"><i class="fas fa-users text-gold me-2"></i>Affiliate Referral Program</h4>
+                    <p class="text-muted">Share your unique invitation link with associates. Receive a 7% commission on their first capital deposit.</p>
+                    
+                    <div class="row g-3 align-items-center mb-4">
+                        <div class="col-md-8">
+                            <label class="form-label form-label-custom">Personal Referral Link</label>
+                            <div class="input-group">
+                                <input type="text" id="refLink" class="form-control form-control-custom text-gold" value="https://bitcryptochain.com/ref?user=ToddAnn" readonly>
+                                <button class="btn btn-outline-gold" type="button" onclick="navigator.clipboard.writeText(document.getElementById('refLink').value); alert('Referral link copied!')">Copy Link</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center text-md-end mt-md-4">
+                            <div class="glass-panel p-3 bg-opacity-20 d-inline-block">
+                                <small class="text-muted d-block">Total Commission Earned</small>
+                                <h4 class="glow-text-gold fw-bold mb-0">$45,200</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-white mb-3">Your Top Referral Signups</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>Email Address</th>
+                                            <th>Date Joined</th>
+                                            <th>Bonus Earned</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>mark.ross@gmail.com</td>
+                                            <td>2026-06-10</td>
+                                            <td class="text-success">+$25,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>helena_vip@outlook.com</td>
+                                            <td>2026-06-18</td>
+                                            <td class="text-success">+$18,200</td>
+                                        </tr>
+                                        <tr>
+                                            <td>jordan.dev@tech.io</td>
+                                            <td>2026-07-02</td>
+                                            <td class="text-success">+$2,000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-white mb-3"><i class="fas fa-trophy text-gold me-2"></i>Global Referral Leaderboard</h5>
+                            <ol class="list-group list-group-numbered bg-transparent text-white" style="font-size: 0.9rem;">
+                                <li class="list-group-item bg-transparent text-light border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <span>Todd Ann Bilodeau</span>
+                                    <span class="badge bg-gold text-black">$45,200</span>
+                                </li>
+                                <li class="list-group-item bg-transparent text-muted border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <span>HedgeFundAdvisor_Zurich</span>
+                                    <span>$38,000</span>
+                                </li>
+                                <li class="list-group-item bg-transparent text-muted border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <span>CryptoWhale_88</span>
+                                    <span>$31,500</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: KYC ==================== -->
+            <div class="dashboard-panel d-none" id="panel-kyc">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="glass-panel p-4 p-md-5 border-glow-gold text-start">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="text-white fw-bold glow-text-gold m-0"><i class="fas fa-id-card me-2"></i>KYC Document Verification</h4>
+                                <span class="badge bg-warning text-black fw-bold" id="kyc-status-badge">Action Required</span>
+                            </div>
+                            <p class="text-muted">Under standard financial regulatory frameworks, investors must submit identification documents to clear higher withdrawal limits.</p>
+                            
+                            <div class="alert alert-success d-none" id="kycAlert">
+                                <strong>Documents Logged!</strong> Your files are currently undergoing verification review by the security department.
+                            </div>
+
+                            <form id="kycForm">
+                                <div class="mb-3">
+                                    <label class="form-label form-label-custom">Identification Document Type</label>
+                                    <select class="form-select form-control-custom" required>
+                                        <option value="passport">Passport Booklet</option>
+                                        <option value="national_id">National ID Card</option>
+                                        <option value="drivers_license">Driver's License</option>
+                                    </select>
+                                </div>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label form-label-custom">Upload Front Side Scan</label>
+                                        <input type="file" class="form-control form-control-custom" accept="image/*,application/pdf" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label form-label-custom">Upload Reverse Side Scan</label>
+                                        <input type="file" class="form-control form-control-custom" accept="image/*,application/pdf">
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label form-label-custom">Upload Proof of Address (Utility bill, bank statement within 90 days)</label>
+                                    <input type="file" class="form-control form-control-custom" accept="image/*,application/pdf" required>
+                                </div>
+                                <button type="submit" class="btn btn-gold w-100 py-3"><i class="fas fa-cloud-arrow-up me-2"></i>Submit Documents for Audit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: TOOLS ==================== -->
+            <div class="dashboard-panel d-none" id="panel-tools">
+                <div class="row g-4">
+                    <!-- Compound Calculator -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-white mb-3"><i class="fas fa-percent text-gold me-2"></i>Compound Earnings Calculator</h5>
+                            <p class="text-muted small">Calculate estimated yields with daily reinvestments compounding automatically.</p>
+                            <div class="mb-3">
+                                <label class="form-label-custom small">Starting Principal (USD)</label>
+                                <input type="number" class="form-control form-control-custom" id="comp-principal" value="10000">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label-custom small">Daily Interest Rate (%)</label>
+                                <input type="number" class="form-control form-control-custom" id="comp-rate" value="3.8" step="0.1">
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label-custom small">Term (Days)</label>
+                                    <input type="number" class="form-control form-control-custom" id="comp-term" value="30">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label-custom small">Reinvestment %</label>
+                                    <input type="number" class="form-control form-control-custom" id="comp-reinvest" value="100" min="0" max="100">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-gold btn-sm w-100 py-2" onclick="calculateCompounding()">Calculate Compounding</button>
+                            <div class="mt-3 pt-3 border-top border-secondary border-opacity-10 d-flex justify-content-between">
+                                <span class="text-muted small">Estimated Compounded End Balance:</span>
+                                <strong class="text-success" id="comp-total-result">$0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Crypto Converter & Fear and Greed Index -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 mb-4">
+                            <h5 class="text-white mb-3"><i class="fas fa-calculator text-blue me-2"></i>Crypto Converter</h5>
+                            <div class="row g-2">
+                                <div class="col-5">
+                                    <input type="number" class="form-control form-control-custom" id="conv-amount" value="1">
+                                </div>
+                                <div class="col-4">
+                                    <select class="form-select form-control-custom" id="conv-coin">
+                                        <option value="BTC" selected>BTC</option>
+                                        <option value="ETH">ETH</option>
+                                        <option value="SOL">SOL</option>
+                                    </select>
+                                </div>
+                                <div class="col-3 d-flex align-items-center text-white">
+                                    <i class="fas fa-equals me-2 text-muted"></i> <strong id="conv-output">$0</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-4">
+                            <h5 class="text-white mb-3"><i class="fas fa-gauge text-gold me-2"></i>Crypto Fear & Greed Index</h5>
+                            <p class="text-muted small">Current market sentiment rating derived from volatility, social media feeds, and volume spreads.</p>
+                            <div class="d-flex align-items-center justify-content-center py-2">
+                                <div class="p-3 border-glow-gold rounded text-center bg-black bg-opacity-30" style="width: 180px;">
+                                    <h2 class="text-success fw-bold mb-0">78</h2>
+                                    <span class="text-success fw-bold font-monospace small">EXTREME GREED</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: SUPPORT ==================== -->
+            <div class="dashboard-panel d-none" id="panel-support">
+                <div class="row g-4">
+                    <div class="col-md-5 text-start">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-white mb-3"><i class="fas fa-headset text-gold me-2"></i>Open Support Tickets</h5>
+                            <p class="text-muted small">Submit questions or secure communication requests to account advisors.</p>
+                            
+                            <form id="ticketForm">
+                                <div class="mb-3">
+                                    <label class="form-label form-label-custom small">Category</label>
+                                    <select class="form-select form-control-custom" id="t-category" required>
+                                        <option value="deposit">Deposit Issues</option>
+                                        <option value="withdrawal">Withdrawal Pending</option>
+                                        <option value="kyc">KYC Verification Audit</option>
+                                        <option value="other">General Inquiries</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label form-label-custom small">Subject</label>
+                                    <input type="text" class="form-control form-control-custom" id="t-subject" required placeholder="Describe topic">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label form-label-custom small">Message Details</label>
+                                    <textarea class="form-control form-control-custom" id="t-msg" rows="4" required placeholder="Type issue here..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-gold btn-sm w-100 py-2">Submit Ticket</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-white mb-3">Ticket Logs</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>Ticket ID</th>
+                                            <th>Category</th>
+                                            <th>Subject</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tickets-logs-body">
+                                        <tr>
+                                            <td><strong>TCK-4819</strong></td>
+                                            <td>Withdrawal</td>
+                                            <td>Priority release check</td>
+                                            <td><span class="status-badge success">Resolved</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW: SECURITY ==================== -->
+            <div class="dashboard-panel d-none" id="panel-security">
+                <div class="row g-4">
+                    <div class="col-lg-6 text-start">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-white mb-3"><i class="fas fa-shield-halved text-gold me-2"></i>Security Control Center</h5>
+                            
+                            <div class="form-check form-switch mb-4 p-3 rounded bg-black bg-opacity-25 border border-secondary border-opacity-10">
+                                <input class="form-check-input ms-0 me-2" type="checkbox" role="switch" id="2faSwitch">
+                                <label class="form-check-label text-white fw-bold" for="2faSwitch">Enforce Two-Factor Authentication (2FA)</label>
+                                <p class="text-muted small mb-0 mt-2">Enforces security prompts via Google Authenticator during account logins and cash withdrawals.</p>
+                            </div>
+
+                            <h5 class="text-white mb-3">Device Session Manager</h5>
+                            <ul class="list-group bg-transparent text-white" style="font-size: 0.85rem;">
+                                <li class="list-group-item bg-transparent text-light border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong class="text-white">Firefox Browser - Zurich, Switzerland</strong><br>
+                                        <small class="text-muted">192.168.1.45 (Active Session)</small>
+                                    </div>
+                                    <span class="badge bg-success">Active</span>
+                                </li>
+                                <li class="list-group-item bg-transparent text-muted border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Mobile Application - Munich, Germany</strong><br>
+                                        <small class="text-muted">172.56.2.19 (1 day ago)</small>
+                                    </div>
+                                    <button class="btn btn-outline-gold btn-sm py-1">Disconnect</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-white mb-3"><i class="fas fa-clock text-blue me-2"></i>Account Login History</h5>
+                            <div class="table-responsive">
+                                <table class="table custom-table text-white mb-0" style="font-size: 0.85rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>IP Address</th>
+                                            <th>Location</th>
+                                            <th>Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>2026-07-09 01:30</td>
+                                            <td>192.168.1.45</td>
+                                            <td>Zurich, Switzerland</td>
+                                            <td><span class="text-success">Successful</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2026-07-08 18:22</td>
+                                            <td>192.168.1.45</td>
+                                            <td>Zurich, Switzerland</td>
+                                            <td><span class="text-success">Successful</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2026-07-07 09:12</td>
+                                            <td>92.16.88.1</td>
+                                            <td>Munich, Germany</td>
+                                            <td><span class="text-success">Successful</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        // Sync the secondary History tab table dynamically
+        document.addEventListener('DOMContentLoaded', () => {
+            const overviewHistory = document.getElementById('transactions-body');
+            const fullHistory = document.getElementById('transactions-body-full');
+            
+            const syncHistoryTables = () => {
+                if (overviewHistory && fullHistory) {
+                    fullHistory.innerHTML = overviewHistory.innerHTML;
+                }
+            };
+            
+            // Set mutation observer or immediate timeout callback
+            setTimeout(syncHistoryTables, 300);
+            
+            const links = document.querySelectorAll('[data-view]');
+            links.forEach(l => {
+                l.addEventListener('click', () => {
+                    setTimeout(syncHistoryTables, 50);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

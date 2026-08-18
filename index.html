@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bit Crypto Chain Investment Crypto Investments | Home</title>
+    <meta name="description" content="Invest in premium, multi-sig secured cryptocurrency investment plans. Bit Crypto Chain Investment offers custom ROI tiers and real-time live trading portfolio metrics.">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- 1. Live Ticker -->
+    <div class="ticker-wrap" id="live-ticker-container">
+        <!-- Live content dynamically injected by main.js/api.js -->
+        <div class="ticker">
+            <span class="ticker-item text-muted">Loading live financial asset feeds...</span>
+        </div>
+    </div>
+
+    <!-- 2. Sticky Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="assets/images/logo.png" alt="Bit Crypto Chain logo" class="navbar-brand-img me-2" style="height: 38px; border-radius: 4px; border: 1px solid var(--accent-gold);">
+                <span class="glow-text-gold fs-4 fw-bold">BIT CRYPTO CHAIN</span>
+            </a>
+            <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars fs-3"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="plans.html">Investment Plans</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="market.html">Live Market</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="contact.html">Contact Us</a></li>
+                </ul>
+                <div class="d-flex align-items-center" id="nav-auth-placeholder">
+                    <!-- Updated by main.js based on auth state -->
+                    <a href="login.html" class="btn btn-outline-gold btn-sm me-2">Login</a>
+                    <a href="signup.html" class="btn btn-gold btn-sm">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 3. Hero Section -->
+    <section class="hero-section">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        <div class="container">
+            <div class="row align-items-center min-vh-75">
+                <div class="col-lg-6 mb-5 mb-lg-0 text-start animate-fade-in">
+                    <span class="badge border-glow-gold bg-transparent text-gold mb-3 py-2 px-3 glow-text-gold">
+                        <i class="fas fa-shield-halved me-2"></i>SECURED CORNERSTONE INVESTMENT
+                    </span>
+                    <h1 class="hero-title">Invest in the Future of Digital Wealth</h1>
+                    <p class="hero-subtitle">
+                        Bit Crypto Chain Investment offers secure, high-yield digital asset allocations. Earn stable daily returns powered by professional trade algorithms, institutional liquidity reserves, and multi-sig cold vault custody.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="signup.html" class="btn btn-gold px-4 py-3"><i class="fas fa-wallet me-2"></i>Create An Account</a>
+                        <a href="plans.html" class="btn btn-dark-glass px-4 py-3"><i class="fas fa-chart-line me-2"></i>View Investment Plans</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="position-relative">
+                        <img src="assets/images/hero.png" alt="Futuristic Trading Charts" class="img-fluid rounded-4 border-glow-gold mb-4" style="box-shadow: 0 0 25px rgba(0, 210, 255, 0.25); max-height: 420px; width: 100%; object-fit: cover;">
+                        <div class="glass-panel p-4 position-absolute bottom-0 start-50 translate-middle-x border-glow-gold" style="background: rgba(4, 8, 15, 0.85); width: 90%;">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="m-0 text-white"><i class="fab fa-bitcoin text-gold me-2"></i>Featured Assets</h5>
+                                <span class="badge bg-success py-1 px-2">Live</span>
+                            </div>
+                            <div class="row g-2 text-start">
+                                <div class="col-4">
+                                    <small class="text-muted d-block">BTC/USD</small>
+                                    <span class="text-white fw-bold font-monospace" id="preview-btc-price">$92,450</span>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block">ETH/USD</small>
+                                    <span class="text-white fw-bold font-monospace" id="preview-eth-price">$3,450</span>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block">SOL/USD</small>
+                                    <span class="text-white fw-bold font-monospace" id="preview-sol-price">$185.5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Real-time Crypto Price Grid -->
+    <section class="py-5 bg-black bg-opacity-40">
+        <div class="container text-center">
+            <div class="row mb-5 justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="glow-text-gold mb-3 fw-bold">Live Market Highlights</h2>
+                    <p class="text-muted">Real-time cryptocurrency rate tickers automatically refreshed. Connect to live feeds for fast investment decisions.</p>
+                </div>
+            </div>
+            <div class="row g-4" id="market-highlights-grid">
+                <!-- Coin widgets will be dynamically populated by index-specific JS/API -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Market Statistics Bar -->
+    <section class="py-5 border-top border-bottom border-secondary border-opacity-10">
+        <div class="container text-center">
+            <div class="row g-4">
+                <div class="col-md-3 col-6">
+                    <h3 class="text-white fw-bold glow-text-blue">$62.4B+</h3>
+                    <p class="text-muted mb-0">Total Platform Liquidity</p>
+                </div>
+                <div class="col-md-3 col-6">
+                    <h3 class="text-white fw-bold glow-text-gold">145k+</h3>
+                    <p class="text-muted mb-0">Registered Global Investors</p>
+                </div>
+                <div class="col-md-3 col-6">
+                    <h3 class="text-white fw-bold glow-text-blue">99.9%</h3>
+                    <p class="text-muted mb-0">Platform Uptime SLA</p>
+                </div>
+                <div class="col-md-3 col-6">
+                    <h3 class="text-white fw-bold glow-text-gold">Instant</h3>
+                    <p class="text-muted mb-0">Withdrawals Approvals</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Features / Security Callouts -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=800" class="img-fluid rounded-4 border-glow-gold" alt="Secured Vault">
+                </div>
+                <div class="col-lg-6 ps-lg-5">
+                    <h2 class="text-white fw-bold mb-4">Institutional-Grade Security Custody</h2>
+                    <div class="d-flex mb-4">
+                        <div class="me-3 fs-3 text-gold"><i class="fas fa-key"></i></div>
+                        <div>
+                            <h5 class="text-white">Multi-Signature Cold Storage</h5>
+                            <p class="text-muted">98% of customer investments are held offline in secure, geographical-distributed vault systems, shielding against external cyberthreats.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-4">
+                        <div class="me-3 fs-3 text-blue"><i class="fas fa-lock"></i></div>
+                        <div>
+                            <h5 class="text-white">Full Capital Reserves & Insurance</h5>
+                            <p class="text-muted">Bit Crypto Chain Investment maintains a 1-to-1 capital reserve match. Additionally, our insurance reserves cover structural vulnerabilities and security protocols.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="me-3 fs-3 text-gold"><i class="fas fa-user-shield"></i></div>
+                        <div>
+                            <h5 class="text-white">Compliance & Regulatory Alignments</h5>
+                            <p class="text-muted">We adhere closely to local anti-money laundering (AML) acts and know-your-customer (KYC) requirements to safeguard our corporate network.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Investment Plans Section -->
+    <section class="py-5 bg-black bg-opacity-30">
+        <div class="container text-center">
+            <div class="row mb-5 justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="glow-text-gold mb-3 fw-bold">Premium Investment Plans</h2>
+                    <p class="text-muted">Select an investment tier tailored to your financial requirements. Accumulate daily returns paid directly to your portfolio balance.</p>
+                </div>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <!-- Starter Plan -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="text-white mb-2">Starter Portfolio</h5>
+                            <h2 class="glow-text-blue my-3">1.5% <small class="fs-6">Daily</small></h2>
+                            <ul class="list-unstyled text-muted text-start mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Min Deposit: $250</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Max Deposit: $4,999</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>ROI Payouts: Daily</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Principal Return</li>
+                            </ul>
+                        </div>
+                        <a href="signup.html" class="btn btn-outline-gold w-100">Invest Now</a>
+                    </div>
+                </div>
+                <!-- Professional Plan -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="text-white mb-2">Professional</h5>
+                            <h2 class="glow-text-gold my-3">2.5% <small class="fs-6">Daily</small></h2>
+                            <ul class="list-unstyled text-muted text-start mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Min Deposit: $5,000</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Max Deposit: $49,999</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>ROI Payouts: Daily</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Dedicated Advisor</li>
+                            </ul>
+                        </div>
+                        <a href="signup.html" class="btn btn-gold w-100">Invest Now</a>
+                    </div>
+                </div>
+                <!-- Premium Investor -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-panel p-4 h-100 border-glow-gold d-flex flex-column justify-content-between position-relative">
+                        <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-gold text-black px-3 py-2 fw-bold">POPULAR</span>
+                        <div>
+                            <h5 class="text-white mb-2 mt-2">Premium Investor</h5>
+                            <h2 class="glow-text-gold my-3">3.8% <small class="fs-6">Daily</small></h2>
+                            <ul class="list-unstyled text-muted text-start mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Min Deposit: $50,000</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Max Deposit: $249,999</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>ROI Payouts: Daily</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Priority Cold Vault</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Monthly Audits</li>
+                            </ul>
+                        </div>
+                        <a href="signup.html" class="btn btn-gold w-100">Invest Now</a>
+                    </div>
+                </div>
+                <!-- VIP Executive -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="text-white mb-2">VIP Executive</h5>
+                            <h2 class="glow-text-blue my-3">5.0% <small class="fs-6">Daily</small></h2>
+                            <ul class="list-unstyled text-muted text-start mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Min Deposit: $250,000</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Max Deposit: Unlimited</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>ROI Payouts: Daily</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>Custom Contract terms</li>
+                                <li class="mb-2"><i class="fas fa-check text-gold me-2"></i>24/7 Priority Concierge</li>
+                            </ul>
+                        </div>
+                        <a href="signup.html" class="btn btn-outline-gold w-100">Invest Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Testimonials Section -->
+    <section class="py-5">
+        <div class="container text-center">
+            <h2 class="glow-text-gold mb-5 fw-bold">Client Success Stories</h2>
+            <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="glass-panel p-5">
+                                    <p class="fs-5 text-light italic mb-4">"Bit Crypto Chain Investment completely redesigned my approach to crypto assets. Secure payouts, daily transaction visibility, and their VIP customer support is top-notch!"</p>
+                                    <h6 class="text-gold m-0">Markus Richardson</h6>
+                                    <small class="text-muted">Premium Investor desde 2024</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="glass-panel p-5">
+                                    <p class="fs-5 text-light italic mb-4">"Finding a secured investment platform that matches compliance and daily yields was difficult until I joined Bit Crypto Chain Investment. The transaction history interface is fully transparent."</p>
+                                    <h6 class="text-gold m-0">Sarah Jenkins</h6>
+                                    <small class="text-muted">Corporate Asset Allocator</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. FAQ Section -->
+    <section class="py-5 bg-black bg-opacity-40">
+        <div class="container">
+            <div class="row mb-5 text-center">
+                <div class="col-12">
+                    <h2 class="glow-text-gold fw-bold">Frequently Asked Questions</h2>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion accordion-custom" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    How does the portfolio earning yield accrue?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Earnings are accumulated on a daily cycle based on your selected Investment plan tier. Your balance is calculated and updated in real-time, matching standard network ledger updates.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    What is the withdrawal timeframe?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Withdrawal requests are processed instantly by our ledger protocols, typically taking between 10 minutes to 1 hour depending on active blockchain confirmations.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    How is user digital security maintained?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    We employ multi-signature cryptographic security, physical institutional-grade cold storage custody, and complete web session CSRF mitigation. Your accounts are fully backed and encrypted.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Crypto News Feed Section -->
+    <section class="py-5 bg-black bg-opacity-20 border-top border-secondary border-opacity-10">
+        <div class="container text-start">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="glow-text-gold fw-bold mb-2"><i class="fas fa-newspaper me-2"></i>Live Crypto News Feed</h2>
+                    <p class="text-muted">Real-time cryptocurrency global headlines fetched dynamically from CryptoCompare news API.</p>
+                </div>
+            </div>
+            <div class="row g-4" id="live-news-container">
+                <div class="col-12 text-center text-muted">Loading live news feeds...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4 mb-5">
+                <div class="col-lg-4 text-start">
+                    <div class="footer-logo glow-text-gold">Bit Crypto Chain Investment</div>
+                    <p class="text-muted">A premier global cryptocurrency investment syndicate, delivering verified daily ROI yields under multi-sig cryptographic custody.</p>
+                    <div class="social-icons mt-3">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 text-start">
+                    <h6 class="text-white fw-bold mb-4">Investment</h6>
+                    <ul class="footer-links">
+                        <li><a href="plans.html">Tiers Overview</a></li>
+                        <li><a href="plans.html">Yield Calculator</a></li>
+                        <li><a href="market.html">Market Rates</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 text-start">
+                    <h6 class="text-white fw-bold mb-4">Corporate</h6>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="#">Security Custody</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 text-start">
+                    <h6 class="text-white fw-bold mb-4">Subscribe to Advisories</h6>
+                    <p class="text-muted">Receive weekly market newsletters and system updates.</p>
+                    <form class="d-flex" id="newsletterForm" onsubmit="event.preventDefault(); alert('Subscribed successfully!'); this.reset();">
+                        <input type="email" class="form-control form-control-custom me-2" placeholder="Your Email Address" required>
+                        <button type="submit" class="btn btn-gold px-3">Join</button>
+                    </form>
+                </div>
+            </div>
+            <div class="border-top border-secondary border-opacity-10 pt-4 text-center text-muted">
+                <p class="mb-2">&copy; 2016 Bit Crypto Chain Investment Crypto Investments. All Rights Reserved.</p>
+                <small class="d-block" style="font-size: 0.75rem;">Risk warning: Cryptocurrency trading and investment carries high risk. Perform standard evaluation of your financial resources before submitting allocations.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Page Specific Script to render live price highlights -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('market-highlights-grid');
+            if (grid && window.CryptoAPI) {
+                const updateGrid = (coins) => {
+                    grid.innerHTML = Object.values(coins).map(coin => {
+                        const isUp = coin.change24h >= 0;
+                        const sign = isUp ? '+' : '';
+                        const changeClass = isUp ? 'up' : 'down';
+                        const iconArrow = isUp ? '▲' : '▼';
+                        return `
+                            <div class="col-lg-4 col-md-6">
+                                <div class="glass-panel coin-card text-start">
+                                    <div class="coin-header">
+                                        <div class="d-flex align-items-center">
+                                            <div class="coin-icon me-3">${coin.icon}</div>
+                                            <div>
+                                                <h5 class="text-white mb-0">${coin.name}</h5>
+                                                <small class="text-muted">${coin.symbol}/USD</small>
+                                            </div>
+                                        </div>
+                                        <span class="coin-change ${changeClass}">${iconArrow} ${sign}${coin.change24h.toFixed(2)}%</span>
+                                    </div>
+                                    <h3 class="text-white glow-text-gold mb-2">$${coin.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</h3>
+                                    <div class="d-flex justify-content-between text-muted" style="font-size: 0.85rem;">
+                                        <span>Market Cap:</span>
+                                        <span class="text-light">${coin.marketCap}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    // Update hero preview as well
+                    const btcP = document.getElementById('preview-btc-price');
+                    const btcC = document.getElementById('preview-btc-change');
+                    const ethP = document.getElementById('preview-eth-price');
+                    const ethC = document.getElementById('preview-eth-change');
+                    const solP = document.getElementById('preview-sol-price');
+                    const solC = document.getElementById('preview-sol-change');
+
+                    if (btcP && coins.BTC) {
+                        btcP.textContent = `$${coins.BTC.price.toLocaleString()}`;
+                        btcC.textContent = `${coins.BTC.change24h >= 0 ? '+' : ''}${coins.BTC.change24h.toFixed(2)}%`;
+                        btcC.className = `coin-change ${coins.BTC.change24h >= 0 ? 'up' : 'down'}`;
+                    }
+                    if (ethP && coins.ETH) {
+                        ethP.textContent = `$${coins.ETH.price.toLocaleString()}`;
+                        ethC.textContent = `${coins.ETH.change24h >= 0 ? '+' : ''}${coins.ETH.change24h.toFixed(2)}%`;
+                        ethC.className = `coin-change ${coins.ETH.change24h >= 0 ? 'up' : 'down'}`;
+                    }
+                    if (solP && coins.SOL) {
+                        solP.textContent = `$${coins.SOL.price.toLocaleString()}`;
+                        solC.textContent = `${coins.SOL.change24h >= 0 ? '+' : ''}${coins.SOL.change24h.toFixed(2)}%`;
+                        solC.className = `coin-change ${coins.SOL.change24h >= 0 ? 'up' : 'down'}`;
+                    }
+                                // Fetch and Render News Feed with 5s slider transitions
+                const fallbackArticles = [
+                    {
+                        title: 'Bitcoin Stabilizes Near Highs as Institutional Interest Continues to Grow',
+                        body: 'Global investment desks reported sustained multi-sig wallet accumulation cycles over the last fiscal period.',
+                        source: 'CryptoNews Desk',
+                        url: '#',
+                        imageurl: 'https://images.unsplash.com/photo-1516245834210-c4c142787335?auto=format&fit=crop&q=80&w=150'
+                    },
+                    {
+                        title: 'Ethereum Smart Contract Layer Launches Upgrade Resolving Network Congestion',
+                        body: 'Developers confirmed the successful deployment of sharding mechanics targeting gas fee volatility limits.',
+                        source: 'Chain Ledger Daily',
+                        url: '#',
+                        imageurl: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&q=80&w=150'
+                    },
+                    {
+                        title: 'Solana Arbitrage Yield Swaps Reach Record Volumes in Defi Pools',
+                        body: 'Decentralized liquidity protocols registered high-frequency spread arbitrage trades, confirming bullish sentiments.',
+                        source: 'Defi Journal',
+                        url: '#',
+                        imageurl: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=150'
+                    }
+                ];
+
+                const startNewsSlider = (containerId, list) => {
+                    const container = document.getElementById(containerId);
+                    if (!container || !list || list.length === 0) return;
+
+                    let index = 0;
+                    const renderSlide = () => {
+                        const art = list[index];
+                        const img = art.imageurl || 'https://images.unsplash.com/photo-1516245834210-c4c142787335?w=150';
+                        const title = art.title || 'Crypto Market Update';
+                        const body = (art.body || '').slice(0, 180);
+                        const source = art.source || 'News Feed';
+                        const url = art.url || '#';
+
+                        // Transition fade out
+                        container.style.opacity = '0';
+                        container.style.transition = 'opacity 0.4s ease-in-out';
+
+                        setTimeout(() => {
+                            container.innerHTML = `
+                                <div class="col-12">
+                                    <div class="glass-panel p-4 d-flex flex-column flex-md-row align-items-center text-start gap-4 animate-fade-in" style="min-height: 200px; border-color: var(--accent-gold);">
+                                        <img src="${img}" class="img-fluid rounded" style="width: 180px; height: 130px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="news image">
+                                        <div class="flex-grow-1">
+                                            <span class="badge bg-secondary font-monospace mb-2" style="font-size: 0.7rem;">${source}</span>
+                                            <h4 class="text-white mb-2 fw-bold" style="font-size: 1.25rem;">${title}</h4>
+                                            <p class="text-muted mb-3" style="font-size: 0.85rem; line-height: 1.5;">${body}...</p>
+                                            <a href="${url}" target="_blank" class="btn btn-gold btn-sm py-1 px-3">Read Full Story <i class="fas fa-external-link-alt ms-1" style="font-size: 0.7rem;"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            // Transition fade in
+                            container.style.opacity = '1';
+                        }, 400);
+
+                        index = (index + 1) % list.length;
+                    };
+
+                    renderSlide();
+                    setInterval(renderSlide, 5000); // 5 seconds interval rotation
+                };
+
+                window.CryptoAPI.fetchLiveNews().then(articles => {
+                    if (articles && articles.length > 0) {
+                        startNewsSlider('live-news-container', articles);
+                    } else {
+                        startNewsSlider('live-news-container', fallbackArticles);
+                    }
+                }).catch(err => {
+                    console.error("News slider setup failed: ", err);
+                    startNewsSlider('live-news-container', fallbackArticles);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
